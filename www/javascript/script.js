@@ -24,6 +24,74 @@ const States = {
     WRONG: "❌"
 }
 
+class AbstractGame{
+    constructor(){
+
+    }
+
+    init(dataSource){
+        console.log("Game init avec la source : " + dataSource);
+    }
+}
+
+class PairGame extends AbstractGame{
+    constructor(){
+        this.aLignes = [];
+    }
+
+    init(dataSource){
+        super.init(dataSource);
+
+        
+    }
+
+    returnCards() {
+        for (const card of cards) {
+            card.childNodes[1].classList.toggle("active");
+            setTimeout(() => {
+                returnCard(card);
+                disableCard(card, false);
+            }, 1500);
+        }
+    }
+
+    refreshNbCouples() {
+        couplesDiv.textContent = "Nombre de couples restant : " + allCouples.length;
+    }
+
+    isCardsMatch() {
+        console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
+    
+        return (getFace(firstCard).textContent == getFace(secondCard).textContent)
+    }
+
+
+}
+
+class Card{
+    constructor(){
+
+    }
+
+    disableCard(button, bool = true) {
+        button.disabled = bool;
+        button.style.cursor = bool ? "auto" : "pointer";
+        if (bool) {
+            button.removeEventListener(EventNames.CLICK, divLigneClickHandler);
+        } else {
+            button.addEventListener(EventNames.CLICK, divLigneClickHandler);
+        }
+    }
+
+    getFace(card) {
+        return card.querySelector(".face");
+    }
+    
+    returnCard(card) {
+        card.childNodes[1].classList.remove("active");
+    }
+}
+
 function init() {
     shuffleArray(aLignes);
     for (const ligne of aLignes) {
@@ -116,44 +184,6 @@ function divLigneClickHandler(evt) {
     }
 }
 
-function refreshNbCouples() {
-    couplesDiv.textContent = "Nombre de couples restant : " + allCouples.length;
-}
-
-function disableCard(button, bool = true) {
-    button.disabled = bool;
-    button.style.cursor = bool ? "auto" : "pointer";
-    if (bool) {
-        button.removeEventListener(EventNames.CLICK, divLigneClickHandler);
-    } else {
-        button.addEventListener(EventNames.CLICK, divLigneClickHandler);
-    }
-}
-
-function isCardsMatch() {
-    console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
-
-    return (getFace(firstCard).textContent == getFace(secondCard).textContent)
-}
-
-function getFace(card) {
-    return card.querySelector(".face");
-}
-
-function returnCard(card) {
-    card.childNodes[1].classList.remove("active");
-}
-
-function returnCards() {
-    for (const card of cards) {
-        card.childNodes[1].classList.toggle("active");
-        setTimeout(() => {
-            returnCard(card);
-            disableCard(card, false);
-        }, 1500);
-    }
-}
-
 let allCouples = [];
 let firstCard;
 let secondCard;
@@ -172,7 +202,7 @@ for (const card of cards) {
     }
 }
 
-let aLignes = [];
+//let aLignes = [];
 for (const ligne of lignes) {
     aLignes.push(ligne);
 }
