@@ -38,13 +38,24 @@ class PairGame extends AbstractGame {
     constructor() {
         super();
         
-        this.aLignes = [];
         this.aCards = [];
         this.allCouples = [];
         this.firstCard;
         this.secondCard;
         this.locked = false;
         this.returnedCard = false;
+        
+        this.infosDiv = document.querySelector("#infos");
+        this.stateDiv = document.querySelector("#state");
+        this.couplesDiv = document.querySelector("#couples");
+        this.lines = document.querySelectorAll(".ligne");
+        this.aLignes = [];
+
+        for (const line of this.lines) {
+            this.aLignes.push(line);
+        }
+        console.log(this.aLignes);
+        
     }
 
     init(dataSource) {
@@ -60,16 +71,15 @@ class PairGame extends AbstractGame {
             }
         }
 
-        return;
+        shuffleArray(this.aLignes);
 
-        shuffleArray(aLignes);
-        for (const ligne of aLignes) {
-            document.querySelector("body").insertBefore(ligne, infosDiv);
+        for (const ligne of this.aLignes) {
+            document.querySelector("body").insertBefore(ligne, this.infosDiv);
         }
-
+        
         for (const letter of Letters) {
             let couples = [];
-            for (const ligne of lines) {
+            for (const ligne of this.lines) {
                 const cartes = ligne.querySelectorAll(".carte");
                 for (const carte of cartes) {
                     const face = carte.querySelector(".face");
@@ -309,17 +319,17 @@ function shuffleArray(array) {
 // let secondCard;
 // let returnedCard = false;
 // let locked = false;
-const infosDiv = document.querySelector("#infos");
-const stateDiv = document.querySelector("#state");
-const couplesDiv = document.querySelector("#couples");
-const lines = document.querySelectorAll(".ligne");
+// const infosDiv = document.querySelector("#infos");
+// const stateDiv = document.querySelector("#state");
+// const couplesDiv = document.querySelector("#couples");
+// const lines = document.querySelectorAll(".ligne");
 
 
 
-//let aLignes = [];
-// for (const line of lines) {
-//     aLignes.push(line);
-// }
+// //let aLignes = [];
+// // for (const line of lines) {
+// //     aLignes.push(line);
+// // }
 
 // init();
 const pairGame = new PairGame();
