@@ -37,7 +37,9 @@ class AbstractGame {
 class PairGame extends AbstractGame {
     constructor() {
         super();
+        
         this.aLignes = [];
+        this.aCards = [];
         this.allCouples = [];
         this.firstCard;
         this.secondCard;
@@ -48,11 +50,13 @@ class PairGame extends AbstractGame {
     init(dataSource) {
         super.init(dataSource);
 
-        const cards = document.querySelectorAll(".carte");
-        for (const card of cards) {
-            getFace(card).textContent = card.getAttribute("data-attr");
+        const cardsClass = document.querySelectorAll(".carte");
+        
+        for (const cardClass of cardsClass) {
+            const card = new Card(cardClass);
+            card.face.textContent = cardClass.getAttribute("data-attr");
             if (debug) {
-                card.querySelector(".arriere").textContent = card.getAttribute("data-attr");
+                card.back.textContent = cardClass.getAttribute("data-attr");
             }
         }
 
@@ -176,8 +180,16 @@ class CardEvent extends Event {
 }
 
 class Card {
-    constructor() {
-        // this.letter
+    constructor(cardDiv) {
+        this.cardDiv = cardDiv;
+    }
+
+    get face() {
+        return this.cardDiv.querySelector(".face");
+    }
+
+    get back() {
+        return this.cardDiv.querySelector(".arriere");
     }
 
     disableCard(button, bool = true) {
@@ -194,9 +206,6 @@ class Card {
         dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
-    getFace(card) {
-        return card.querySelector(".face");
-    }
 
     returnCard(card) {
         card.childNodes[1].classList.remove("active");
