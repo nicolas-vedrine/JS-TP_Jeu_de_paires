@@ -68,8 +68,6 @@ class PairGame extends AbstractGame {
     init(dataSource) {
         super.init(dataSource);
 
-        return;
-
         const cardsClass = document.querySelectorAll(".carte");
         
         for (const cardClass of cardsClass) {
@@ -78,50 +76,55 @@ class PairGame extends AbstractGame {
             if (debug) {
                 card.back.textContent = cardClass.getAttribute("data-attr");
             }
+            this.aCards.push(card);
         }
 
         shuffleArray(this.lines);
 
         for (const ligne of this.lines) {
-            document.querySelector("body").insertBefore(ligne, this.infosDiv);
+            document.querySelector("body").insertBefore(ligne.dataSource, this.infosDiv);
         }
         
         for (const letter of Letters) {
             let couples = [];
-            for (const ligne of this.linesDiv) {
-                const cartes = ligne.querySelectorAll(".carte");
-                for (const carte of cartes) {
-                    const face = carte.querySelector(".face");
-                    face.style.transform = "rotateY(180deg)";
-                    if (face) {
-                        if (!carte.className.includes("hidden") && face.textContent.includes(letter)) {
-                            couples.push(carte);
-                        }
-                    }
+            for (const line of this.lines) {
+                // const cartes = line.querySelectorAll(".carte");
+                for (const card of this.aCards) {
+                    // const face = card.querySelector(".face");
+                    card.rotate();
+                    couples.push(card);
+                    
+                    // if (face) {
+                    //     if (!card.className.includes("hidden") && face.textContent.includes(letter)) {
+                    //         couples.push(card);
+                    //     }
+                    // }
                 }
             }
             if (couples.length > 0) {
-                allCouples.push(couples);
+                this.allCouples.push(couples);
             }
         }
-        console.log(allCouples);
+        console.log(this.allCouples);
 
-        returnCards();
-        refreshNbCouples();
+        this.returnCards();
+        this.refreshNbCouples();
     }
 
     returnCards() {
-        for (const card of cards) {
-            card.childNodes[1].classList.toggle("active");
+        for (const card of this.aCards) {
+            // card.childNodes[1].classList.toggle("active");
+            card.activate(true);
             setTimeout(() => {
-                returnCard(card);
-                disableCard(card, false);
+                card.activate(false);
+                // disableCard(card, false);
+                card.disableCard(false);
             }, 1500);
         }
     }
 
     refreshNbCouples() {
-        couplesDiv.textContent = "Nombre de couples restant : " + allCouples.length;
+        this.couplesDiv.textContent = "Nombre de couples restant : " + this.allCouples.length;
     }
 
     isCardsMatch() {
@@ -193,8 +196,8 @@ const CardEventsName = {
 }
 
 class CardEvent extends Event {
-    constructor() {
-
+    constructor(type) {
+        super(type);
     }
 }
 
@@ -211,23 +214,36 @@ class Card {
         return this.cardDiv.querySelector(".arriere");
     }
 
-    disableCard(button, bool = true) {
-        button.disabled = bool;
-        button.style.cursor = bool ? "auto" : "pointer";
+    disable(bool = true) {
+        this.cardDiv.disabled = bool;
+        this.cardDiv.style.cursor = bool ? "auto" : "pointer";
         if (bool) {
-            button.removeEventListener(EventNames.CLICK, divLigneClickHandler);
+            this.cardDiv.removeEventListener(CardEventsName.CLICK, this.divLigneClickHandler);
         } else {
-            button.addEventListener(EventNames.CLICK, divLigneClickHandler);
+            this.cardDiv.addEventListener(CardEventsName.CLICK, this.divLigneClickHandler);
         }
     }
 
     divLigneClickHandler() {
-        dispatchEvent(new CardEvent(CardEventsName.CLICK));
+        const evt = new CardEvent(CardEventsName.CLICK);
+        dispatchEvent(evt);
+    }
+
+    activate(flag){
+        if(flag){
+            this.cardDiv.childNodes[1].classList.toggle("active");
+        }else{
+            this.cardDiv.childNodes[1].classList.remove("active");    
+        }
     }
 
 
-    returnCard(card) {
-        card.childNodes[1].classList.remove("active");
+    // returnCard(card) {
+    //     card.childNodes[1].classList.remove("active");
+    // }
+
+    rotate(){
+        this.face.style.transform = "rotateY(180deg)";
     }
 }
 
