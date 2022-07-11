@@ -34,6 +34,12 @@ class AbstractGame {
     }
 }
 
+class Line{
+    constructor(dataSource){
+        this.dataSource = dataSource;
+    }
+}
+
 class PairGame extends AbstractGame {
     constructor() {
         super();
@@ -48,18 +54,21 @@ class PairGame extends AbstractGame {
         this.infosDiv = document.querySelector("#infos");
         this.stateDiv = document.querySelector("#state");
         this.couplesDiv = document.querySelector("#couples");
-        this.lines = document.querySelectorAll(".ligne");
-        this.aLignes = [];
+        this.linesDiv = document.querySelectorAll(".ligne");
+        this.lines = [];
 
-        for (const line of this.lines) {
-            this.aLignes.push(line);
+        for (const lineDiv of this.linesDiv) {
+            const line = new Line(lineDiv);
+            this.lines.push(line);
         }
-        console.log(this.aLignes);
+        console.log(this.lines);
         
     }
 
     init(dataSource) {
         super.init(dataSource);
+
+        return;
 
         const cardsClass = document.querySelectorAll(".carte");
         
@@ -71,15 +80,15 @@ class PairGame extends AbstractGame {
             }
         }
 
-        shuffleArray(this.aLignes);
+        shuffleArray(this.lines);
 
-        for (const ligne of this.aLignes) {
+        for (const ligne of this.lines) {
             document.querySelector("body").insertBefore(ligne, this.infosDiv);
         }
         
         for (const letter of Letters) {
             let couples = [];
-            for (const ligne of this.lines) {
+            for (const ligne of this.linesDiv) {
                 const cartes = ligne.querySelectorAll(".carte");
                 for (const carte of cartes) {
                     const face = carte.querySelector(".face");
