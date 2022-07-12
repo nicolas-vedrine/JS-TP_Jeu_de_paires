@@ -44,7 +44,7 @@ class PairGame extends AbstractGame {
     constructor() {
         super();
         
-        this.aCards = [];
+        this.cards = [];
         this.allCouples = [];
         this.firstCard;
         this.secondCard;
@@ -61,22 +61,28 @@ class PairGame extends AbstractGame {
             const line = new Line(lineDiv);
             this.lines.push(line);
         }
-        console.log(this.lines);
+    }
+
+    cardClickHandler(evt){
+        console.log("cardClickHandler", evt.target);
         
+        evt.target.activate(true);
     }
 
     init(dataSource) {
         super.init(dataSource);
 
+        this.cards.splice(0);
         const cardsClass = document.querySelectorAll(".carte");
         
         for (const cardClass of cardsClass) {
             const card = new Card(cardClass);
+            card.cardDiv.addEventListener(EventNames.CLICK, this.cardClickHandler);
             card.face.textContent = cardClass.getAttribute("data-attr");
             if (debug) {
                 card.back.textContent = cardClass.getAttribute("data-attr");
             }
-            this.aCards.push(card);
+            this.cards.push(card);
         }
 
         shuffleArray(this.lines);
@@ -89,7 +95,7 @@ class PairGame extends AbstractGame {
             let couples = [];
             for (const line of this.lines) {
                 // const cartes = line.querySelectorAll(".carte");
-                for (const card of this.aCards) {
+                for (const card of this.cards) {
                     // const face = card.querySelector(".face");
                     card.rotate();
                     couples.push(card);
@@ -105,20 +111,19 @@ class PairGame extends AbstractGame {
                 this.allCouples.push(couples);
             }
         }
-        console.log(this.allCouples);
+        // console.log(this.allCouples);
 
-        this.returnCards();
+        this.flipCards();
         this.refreshNbCouples();
     }
 
-    returnCards() {
-        for (const card of this.aCards) {
+    flipCards() {
+        for (const card of this.cards) {
             // card.childNodes[1].classList.toggle("active");
             card.activate(true);
             setTimeout(() => {
                 card.activate(false);
-                // disableCard(card, false);
-                card.disableCard(false);
+                card.disable(false);
             }, 1500);
         }
     }
@@ -128,9 +133,9 @@ class PairGame extends AbstractGame {
     }
 
     isCardsMatch() {
-        console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
-
-        return (getFace(firstCard).textContent == getFace(secondCard).textContent)
+        // console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
+        const bool = this.firstCard.face.textContent == this.secondCard.face.textContent;
+        return bool;
     }
 
     divLigneClickHandler(evt) {
@@ -192,7 +197,7 @@ class PairGame extends AbstractGame {
 }
 
 const CardEventsName = {
-    CLICK: "click"
+    CLICK: "card_click"
 }
 
 class CardEvent extends Event {
@@ -201,8 +206,9 @@ class CardEvent extends Event {
     }
 }
 
-class Card {
+class Card extends EventTarget {
     constructor(cardDiv) {
+        super();
         this.cardDiv = cardDiv;
     }
 
@@ -218,15 +224,16 @@ class Card {
         this.cardDiv.disabled = bool;
         this.cardDiv.style.cursor = bool ? "auto" : "pointer";
         if (bool) {
-            this.cardDiv.removeEventListener(CardEventsName.CLICK, this.divLigneClickHandler);
+            this.cardDiv.removeEventListener(EventNames.CLICK, this.divLigneClickHandler);
         } else {
-            this.cardDiv.addEventListener(CardEventsName.CLICK, this.divLigneClickHandler);
+            this.cardDiv.addEventListener(EventNames.CLICK, this.divLigneClickHandler);
         }
     }
 
-    divLigneClickHandler() {
-        const evt = new CardEvent(CardEventsName.CLICK);
-        dispatchEvent(evt);
+    divLigneClickHandler(evt) {
+        console.log("divLigneClickHandler", evt);
+        
+        dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
     activate(flag){
