@@ -42,6 +42,9 @@ class PairGame {
             this.cards.push(card);
             i++;
         }
+
+        const card = this.cards[0];
+        card.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
     cardClickHandler(evt){
@@ -78,7 +81,12 @@ class Card extends EventTarget {
     constructor() {
         super();
     }
+
+    test(){
+        console.log("test");
+        
+        dispatchEvent(new CardEvent(CardEventsName.CLICK));
+    }
 }
 
 const pairGame = new PairGame();
-pairGame.flipCards();

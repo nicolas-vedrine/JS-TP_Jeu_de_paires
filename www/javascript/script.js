@@ -49,7 +49,7 @@ class PairGame extends AbstractGame {
         this.firstCard;
         this.secondCard;
         this.locked = false;
-        this.returnedCard = false;
+        this.flippedCard = false;
         
         this.infosDiv = document.querySelector("#infos");
         this.stateDiv = document.querySelector("#state");
@@ -63,10 +63,72 @@ class PairGame extends AbstractGame {
         }
     }
 
-    cardClickHandler(evt){
-        console.log("cardClickHandler", evt.target);
+    cardClickHandler(card){
+        // console.log("cardClickHandler", this);
+        card.activate(true);
+
+
+        if (this.locked) {
+            return;
+        }
+
+        if (!this.flippedCard) {
+            this.flippedCard = true;
+            this.firstCard = card;
+            card.disable(true);
+        } else {
+            this.flippedCard = false;
+            this.secondCard = card;
+            console.log("toto", this.secondCard);
+        }
+
+        console.log("flip", this.firstCard, this.secondCard);
         
-        evt.target.activate(true);
+
+        if (this.firstCard && this.secondCard) {
+            console.log("isCardsMatch", this.isCardsMatch());
+            this.locked = true;
+            this.secondCard.disable(true);
+            if (this.isCardsMatch()) {
+                this.stateDiv.textContent = States.GOOD;
+                for (const couple of this.allCouples) {
+                    console.log("couple", couple);
+                    
+                    const first = couple[0];
+                    if (this.firstCard.letter == first.letter) {
+                        
+                        // console.log("dddd", this.allCouples.indexOf(couple));
+                        console.log("dddd", this.allCouples.indexOf(couple));
+
+                        this.allCouples.splice(this.allCouples.indexOf(couple), 1);
+                        console.log("allCouples.length", this.allCouples.length);
+                        if (this.allCouples.length == 0) {
+                            console.log("Partie terminée !");
+                            // this.init();
+                        }
+                        break;
+                    }
+                    // console.log(couple);
+                }
+                this.firstCard = null;
+                this.secondCard = null;
+                this.locked = false;
+                this.refreshNbCouples();
+            } else {
+                this.stateDiv.textContent = States.WRONG;
+                setTimeout(() => {
+                    this.stateDiv.textContent = "";
+                    this.firstCard.activate(false);
+                    this.secondCard.activate(false);
+                    this.firstCard.disable(false);
+                    this.secondCard.disable(false);
+
+                    this.firstCard = null;
+                    this.secondCard = null;
+                    this.locked = false;
+                }, 1500);
+            }
+        }
     }
 
     init(dataSource) {
@@ -77,7 +139,12 @@ class PairGame extends AbstractGame {
         
         for (const cardClass of cardsClass) {
             const card = new Card(cardClass);
-            card.cardDiv.addEventListener(EventNames.CLICK, this.cardClickHandler);
+            // card.addEventListener(CardEventsName.CLICK, this.cardClickHandler);
+
+            card.addEventListener(CardEventsName.CLICK, function() {
+                this.cardClickHandler(card);
+            }.bind(this));
+
             card.face.textContent = cardClass.getAttribute("data-attr");
             if (debug) {
                 card.back.textContent = cardClass.getAttribute("data-attr");
@@ -95,11 +162,17 @@ class PairGame extends AbstractGame {
             let couples = [];
             for (const line of this.lines) {
                 // const cartes = line.querySelectorAll(".carte");
+
                 for (const card of this.cards) {
                     // const face = card.querySelector(".face");
-                    card.rotate();
-                    couples.push(card);
+                    // card.rotate();
+                    // couples.push(card);
+
+                    // console.log(couples);
                     
+                    
+                    
+
                     // if (face) {
                     //     if (!card.className.includes("hidden") && face.textContent.includes(letter)) {
                     //         couples.push(card);
@@ -107,10 +180,24 @@ class PairGame extends AbstractGame {
                     // }
                 }
             }
+
+            for (const card of this.cards) {
+                console.log("card", card);
+                
+                if(card.letter == letter){
+                    card.rotate();
+                    couples.push(card);
+                }    
+            }
             if (couples.length > 0) {
                 this.allCouples.push(couples);
+                
             }
         }
+
+        console.log(this.cards);
+        
+
         // console.log(this.allCouples);
 
         this.flipCards();
@@ -138,60 +225,60 @@ class PairGame extends AbstractGame {
         return bool;
     }
 
-    divLigneClickHandler(evt) {
-        if (locked) {
-            return;
-        }
-        this.childNodes[1].classList.toggle("active");
+    // toto() {
+    //     if (locked) {
+    //         return;
+    //     }
+    //     // this.childNodes[1].classList.toggle("active");
 
-        if (!returnedCard) {
-            returnedCard = true;
-            firstCard = this;
-            disableCard(firstCard);
-        } else {
-            returnedCard = false;
-            secondCard = this;
-        }
+    //     if (!returnedCard) {
+    //         returnedCard = true;
+    //         firstCard = this;
+    //         disableCard(firstCard);
+    //     } else {
+    //         returnedCard = false;
+    //         secondCard = this;
+    //     }
 
-        if (firstCard && secondCard) {
-            console.log("isCardsMatch", isCardsMatch());
-            locked = true;
-            disableCard(secondCard);
-            if (isCardsMatch()) {
-                stateDiv.textContent = States.GOOD;
-                for (const couple of allCouples) {
-                    const first = couple[0];
-                    if (firstCard.getAttribute("data-attr") == first.getAttribute("data-attr")) {
-                        allCouples.splice(allCouples.indexOf(couple), 1);
-                        console.log("allCouples.length", allCouples.length);
-                        if (allCouples.length == 0) {
-                            console.log("Partie terminée !");
-                            init();
-                        }
-                        break;
-                    }
-                    console.log(couple);
-                }
-                firstCard = null;
-                secondCard = null;
-                locked = false;
-                refreshNbCouples();
-            } else {
-                stateDiv.textContent = States.WRONG;
-                setTimeout(() => {
-                    stateDiv.textContent = "";
-                    returnCard(firstCard);
-                    returnCard(secondCard);
-                    disableCard(firstCard, false);
-                    disableCard(secondCard, false);
+    //     if (firstCard && secondCard) {
+    //         console.log("isCardsMatch", isCardsMatch());
+    //         locked = true;
+    //         disableCard(secondCard);
+    //         if (isCardsMatch()) {
+    //             stateDiv.textContent = States.GOOD;
+    //             for (const couple of allCouples) {
+    //                 const first = couple[0];
+    //                 if (firstCard.getAttribute("data-attr") == first.getAttribute("data-attr")) {
+    //                     allCouples.splice(allCouples.indexOf(couple), 1);
+    //                     console.log("allCouples.length", allCouples.length);
+    //                     if (allCouples.length == 0) {
+    //                         console.log("Partie terminée !");
+    //                         init();
+    //                     }
+    //                     break;
+    //                 }
+    //                 console.log(couple);
+    //             }
+    //             firstCard = null;
+    //             secondCard = null;
+    //             locked = false;
+    //             refreshNbCouples();
+    //         } else {
+    //             stateDiv.textContent = States.WRONG;
+    //             setTimeout(() => {
+    //                 stateDiv.textContent = "";
+    //                 returnCard(firstCard);
+    //                 returnCard(secondCard);
+    //                 disableCard(firstCard, false);
+    //                 disableCard(secondCard, false);
 
-                    firstCard = null;
-                    secondCard = null;
-                    locked = false;
-                }, 1500);
-            }
-        }
-    }
+    //                 firstCard = null;
+    //                 secondCard = null;
+    //                 locked = false;
+    //             }, 1500);
+    //         }
+    //     }
+    // }
 
 
 }
@@ -200,7 +287,7 @@ const CardEventsName = {
     CLICK: "card_click"
 }
 
-class CardEvent extends Event {
+class CardEvent extends CustomEvent {
     constructor(type) {
         super(type);
     }
@@ -209,7 +296,12 @@ class CardEvent extends Event {
 class Card extends EventTarget {
     constructor(cardDiv) {
         super();
+        
         this.cardDiv = cardDiv;
+    }
+
+    get letter(){
+        return this.cardDiv.getAttribute("data-attr");
     }
 
     get face() {
@@ -225,15 +317,21 @@ class Card extends EventTarget {
         this.cardDiv.style.cursor = bool ? "auto" : "pointer";
         if (bool) {
             this.cardDiv.removeEventListener(EventNames.CLICK, this.divLigneClickHandler);
+
+            
         } else {
-            this.cardDiv.addEventListener(EventNames.CLICK, this.divLigneClickHandler);
+            // this.cardDiv.addEventListener(EventNames.CLICK, this.divLigneClickHandler);
+
+            this.cardDiv.addEventListener(EventNames.CLICK, function() {
+                this.divLigneClickHandler();
+            }.bind(this));
         }
     }
 
-    divLigneClickHandler(evt) {
-        console.log("divLigneClickHandler", evt);
+    divLigneClickHandler() {
+        console.log("divLigneClickHandler");
         
-        dispatchEvent(new CardEvent(CardEventsName.CLICK));
+        this.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
     activate(flag){
