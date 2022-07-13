@@ -149,7 +149,7 @@ class PairGame extends AbstractGame {
             let couples = [];
 
             for (const card of this.cards) {
-                console.log("card", card);
+                // console.log("card", card);
 
                 if (card.letter == letter) {
                     card.rotate();
@@ -200,48 +200,74 @@ class CardEvent extends CustomEvent {
     }
 }
 
-class Card extends EventTarget {
-    constructor(cardDiv) {
+class AbstractButton extends EventTarget{
+    constructor(buttonDiv){
         super();
 
-        this.cardDiv = cardDiv;
-    }
-
-    get letter() {
-        return this.cardDiv.getAttribute("data-attr");
-    }
-
-    get face() {
-        return this.cardDiv.querySelector(".face");
-    }
-
-    get back() {
-        return this.cardDiv.querySelector(".arriere");
+        this.buttonDiv = buttonDiv;
+        console.log("buttonDiv", this.buttonDiv);
+        
     }
 
     disable(bool = true) {
-        this.cardDiv.disabled = bool;
-        this.cardDiv.style.cursor = bool ? "auto" : "pointer";
+        this.buttonDiv.disabled = bool;
+        this.buttonDiv.style.cursor = bool ? "auto" : "pointer";
         if (bool) {
-            this.cardDiv.removeEventListener(EventNames.CLICK, this.divLigneClickHandler);
+            this.buttonDiv.removeEventListener(EventNames.CLICK, this.buttonClickHandler);
         } else {
-            this.cardDiv.addEventListener(EventNames.CLICK, function () {
-                this.divLigneClickHandler();
+            this.buttonDiv.addEventListener(EventNames.CLICK, function () {
+                this.buttonClickHandler();
             }.bind(this));
         }
     }
 
-    divLigneClickHandler() {
-        console.log("divLigneClickHandler");
+    buttonClickHandler(){
+        console.log("AbstractButton clicked.");
+    }
+}
+
+class Card extends AbstractButton {
+    constructor(buttonDiv) {
+        super(buttonDiv);
+
+        // this.cardDiv = cardDiv;
+    }
+
+    get letter() {
+        return this.buttonDiv.getAttribute("data-attr");
+    }
+
+    get face() {
+        return this.buttonDiv.querySelector(".face");
+    }
+
+    get back() {
+        return this.buttonDiv.querySelector(".arriere");
+    }
+
+    // disable(bool = true) {
+    //     this.cardDiv.disabled = bool;
+    //     this.cardDiv.style.cursor = bool ? "auto" : "pointer";
+    //     if (bool) {
+    //         this.cardDiv.removeEventListener(EventNames.CLICK, this.divLigneClickHandler);
+    //     } else {
+    //         this.cardDiv.addEventListener(EventNames.CLICK, function () {
+    //             this.divLigneClickHandler();
+    //         }.bind(this));
+    //     }
+    // }
+
+    buttonClickHandler() {
+        super.buttonClickHandler();
 
         this.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
     activate(flag) {
         if (flag) {
-            this.cardDiv.childNodes[1].classList.toggle("active");
+            this.buttonDiv.childNodes[1].classList.toggle("active");
         } else {
-            this.cardDiv.childNodes[1].classList.remove("active");
+            this.buttonDiv.childNodes[1].classList.remove("active");
         }
     }
 
