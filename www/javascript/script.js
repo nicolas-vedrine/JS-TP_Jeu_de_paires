@@ -184,7 +184,7 @@ class PairGame extends AbstractGame {
 
     isCardsMatch() {
         // console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
-        const bool = this.firstCard.face.textContent == this.secondCard.face.textContent;
+        const bool = this.firstCard.face. textContent == this.secondCard.face.textContent;
         return bool;
     }
 

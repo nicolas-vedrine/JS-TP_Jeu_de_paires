@@ -44,7 +44,7 @@ class PairGame {
         }
 
         const card = this.cards[0];
-        card.dispatchEvent(new CardEvent(CardEventsName.CLICK));
+        // card.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
     cardClickHandler(evt){
