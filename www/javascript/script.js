@@ -36,10 +36,9 @@ class PairGame extends AbstractGame {
         this.firstCard;
         this.secondCard;
         this.locked = false;
-        // this.flippedCard = false;
 
         this.linesDiv = document.querySelectorAll(".ligne");
-        this.lines = [];
+        this.lines = []; // TODO >>> check
 
         for (const lineDiv of this.linesDiv) {
             const line = new Line(lineDiv);
@@ -48,26 +47,18 @@ class PairGame extends AbstractGame {
     }
 
     cardClickHandler(card) {
-        
         if (this.locked) {
             return;
         }
 
         card.activate(true);
-
-        console.log("try firstCard", this.firstCard);
-        console.log("try secondCard", this.secondCard);
         
-        
-
         if (!this.firstCard) {
             this.firstCard = card;
             this.firstCard.disable(true);
         } else {
-            // this.flippedCard = false;
             this.secondCard = card;
             this.secondCard.disable(true);
-            console.log("this.secondCard", this.secondCard);
         }
 
         if (this.firstCard && this.secondCard) {
@@ -79,7 +70,6 @@ class PairGame extends AbstractGame {
                     const first = couple[0];
                     if (this.firstCard.letter == first.letter) {
                         this.allCouples.splice(this.allCouples.indexOf(couple), 1);
-                        console.log("allCouples.length", this.allCouples.length);
                         if (this.allCouples.length == 0) {
                             console.log("Partie terminée !");
                             this.dispatchEvent(new PairGameEvent(AbstractGameEventNames.WIN));
@@ -94,7 +84,6 @@ class PairGame extends AbstractGame {
             } else {
                 this.dispatchEvent(new PairGameEvent(PairGameEventNames.WRONG));
                 setTimeout(() => {
-                    
                     this.firstCard.activate(false);
                     this.secondCard.activate(false);
                     this.firstCard.disable(false);
@@ -105,13 +94,8 @@ class PairGame extends AbstractGame {
                     this.locked = false;
 
                     this.dispatchEvent(new PairGameEvent(PairGameEventNames.FLIP));
-                    console.log(this);
-                    
-                    
                 }, Delays.FLIP);
             }
-            console.log("---------------------");
-            
         }
     }
 
@@ -135,7 +119,7 @@ class PairGame extends AbstractGame {
         shuffleArray(this.lines);
 
         for (const ligne of this.lines) {
-            dataSource.querySelector("body").insertBefore(ligne.dataSource, this.infosDiv);
+            dataSource.querySelector("body").insertBefore(ligne.dataSource, this.infosDiv); //TODO
         }
         
         let i = 0;
@@ -154,7 +138,6 @@ class PairGame extends AbstractGame {
             if (couples.length > 0) {
                 this.allCouples.push(couples);
             }
-            console.log(letter);
             
             if(isDebug && i > Letters.length / 8){
                 break;
@@ -178,9 +161,7 @@ class PairGame extends AbstractGame {
     }
 
     isCardsMatch() {
-        // console.log(getFace(firstCard).textContent, getFace(secondCard).textContent);
-        const bool = this.firstCard.face. textContent == this.secondCard.face.textContent;
-        return bool;
+        return this.firstCard.letter == this.secondCard.letter;
     }
 
 }
