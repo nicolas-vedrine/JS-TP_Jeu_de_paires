@@ -13,6 +13,7 @@ class AbstractButton extends EventTarget{
         super();
 
         this.buttonDiv = buttonDiv;
+        // https://medium.com/@bigcatplichta/javascript-use-bind-to-dynamically-add-and-remove-event-listeners-d6b443877a73
         this.boundEventHandler = this.buttonClickHandler.bind(this);
         this.isDisable = false;
         console.log("buttonDiv", this.buttonDiv);
@@ -31,7 +32,8 @@ class AbstractButton extends EventTarget{
     buttonClickHandler(){
         console.log("AbstractButton clicked.", this.buttonDiv);
     }
-}
+    
+};
 
 const AbstractGameEventNames = {
     INIT: "init",
@@ -43,7 +45,7 @@ class AbstractGameEvent extends CustomEvent {
     constructor(type) {
         super(type);
     }
-}
+};
 
 class AbstractGame extends EventTarget {
     constructor() {
@@ -57,14 +59,14 @@ class AbstractGame extends EventTarget {
         this.dispatchEvent(new AbstractGameEvent(AbstractGameEventNames.INIT));
         console.log("Game init avec la source : " + dataSource);
     }
-}
+};
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
-}
+};
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
