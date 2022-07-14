@@ -13,6 +13,7 @@ class AbstractButton extends EventTarget{
         super();
 
         this.buttonDiv = buttonDiv;
+        this.boundEventHandler = this.buttonClickHandler.bind(this);
         // console.log("buttonDiv", this.buttonDiv);
     }
 
@@ -20,13 +21,32 @@ class AbstractButton extends EventTarget{
         this.buttonDiv.disabled = bool;
         this.buttonDiv.style.cursor = bool ? "auto" : "pointer";
         if (bool) {
-            this.buttonDiv.removeEventListener(EventNames.CLICK, this.buttonClickHandler);
+            // this.buttonDiv.removeEventListener(EventNames.CLICK, () => this.buttonClickHandler());
+
+            this.removeListener();
+
+            // this.buttonDiv.removeEventListener(EventNames.CLICK, this.buttonClickHandler);
+            // this.buttonDiv.removeEventListener(EventNames.CLICK, function () {
+            //     this.buttonClickHandler();
+            // }.bind(this));
         } else {
-            this.buttonDiv.addEventListener(EventNames.CLICK, function () {
-                this.buttonClickHandler();
-            }.bind(this));
+            // this.buttonDiv.addEventListener(EventNames.CLICK, function () {
+            //     this.buttonClickHandler();
+            // }.bind(this));
+            // this.buttonDiv.addEventListener(EventNames.CLICK, this.buttonClickHandler);
+
+            // this.buttonDiv.addEventListener(EventNames.CLICK, () => this.buttonClickHandler());
+            this.buttonDiv.addEventListener(EventNames.CLICK, this.boundEventHandler)
         }
     }
+
+    // eventHandler() {
+    //     console.log(this);
+    // }
+
+    removeListener() {
+        this.buttonDiv.removeEventListener(EventNames.CLICK, this.boundEventHandler);
+     }
 
     buttonClickHandler(){
         console.log("AbstractButton clicked.");

@@ -36,7 +36,7 @@ class PairGame extends AbstractGame {
         this.firstCard;
         this.secondCard;
         this.locked = false;
-        this.flippedCard = false;
+        // this.flippedCard = false;
 
         this.linesDiv = document.querySelectorAll(".ligne");
         this.lines = [];
@@ -52,23 +52,28 @@ class PairGame extends AbstractGame {
         if (this.locked) {
             return;
         }
-        
+
         card.activate(true);
 
-        if (!this.flippedCard) {
-            this.flippedCard = true;
+        console.log("try firstCard", this.firstCard);
+        console.log("try secondCard", this.secondCard);
+        
+        
+
+        if (!this.firstCard) {
+            // this.flippedCard = true;
             this.firstCard = card;
-            card.disable(true);
+            this.firstCard.disable(true);
         } else {
-            this.flippedCard = false;
+            // this.flippedCard = false;
             this.secondCard = card;
+            this.secondCard.disable(true);
             console.log("this.secondCard", this.secondCard);
         }
 
         if (this.firstCard && this.secondCard) {
             console.log("isCardsMatch", this.isCardsMatch());
             this.locked = true;
-            this.secondCard.disable(true);
             if (this.isCardsMatch()) {
                 for (const couple of this.allCouples) {
                     console.log("couple", couple);
@@ -101,9 +106,13 @@ class PairGame extends AbstractGame {
                     this.locked = false;
 
                     this.dispatchEvent(new PairGameEvent(PairGameEventNames.FLIP));
+                    console.log(this);
+                    
                     
                 }, Delays.FLIP);
             }
+            console.log("---------------------");
+            
         }
     }
 
@@ -165,6 +174,7 @@ class PairGame extends AbstractGame {
             setTimeout(() => {
                 card.activate(false);
                 card.disable(false);
+                // card.disable(true);
             }, Delays.FLIP);
         }
     }
@@ -206,6 +216,9 @@ class Card extends AbstractButton {
 
     buttonClickHandler() {
         super.buttonClickHandler();
+
+        console.log(this.buttonDiv);
+        
 
         this.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
