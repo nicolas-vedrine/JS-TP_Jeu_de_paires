@@ -61,7 +61,6 @@ class PairGame extends AbstractGame {
         
 
         if (!this.firstCard) {
-            // this.flippedCard = true;
             this.firstCard = card;
             this.firstCard.disable(true);
         } else {
@@ -157,7 +156,7 @@ class PairGame extends AbstractGame {
             }
             console.log(letter);
             
-            if(isDebug && i > Letters.length / 4){
+            if(isDebug && i > Letters.length / 8){
                 break;
             }
             i++;
@@ -174,7 +173,6 @@ class PairGame extends AbstractGame {
             setTimeout(() => {
                 card.activate(false);
                 card.disable(false);
-                // card.disable(true);
             }, Delays.FLIP);
         }
     }
@@ -217,9 +215,6 @@ class Card extends AbstractButton {
     buttonClickHandler() {
         super.buttonClickHandler();
 
-        console.log(this.buttonDiv);
-        
-
         this.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
@@ -258,6 +253,11 @@ function pairGameFlipHandler(evt){
     stateDiv.textContent = "";
 }
 
+function pairGameWinHandler(evt){
+    console.log("pairGameWinHandler", evt.type);
+    pairGame.init(document);
+}
+
 function refreshNbCouples() {
     const infosDiv = document.querySelector("#infos");
     const couplesDiv = document.querySelector("#couples");
@@ -269,4 +269,5 @@ pairGame.addEventListener(AbstractGameEventNames.INIT, pairGameInitHandler);
 pairGame.addEventListener(PairGameEventNames.GOOD, pairGameGoodWrongHandler);
 pairGame.addEventListener(PairGameEventNames.WRONG, pairGameGoodWrongHandler);
 pairGame.addEventListener(PairGameEventNames.FLIP, pairGameFlipHandler);
+pairGame.addEventListener(AbstractGameEventNames.WIN, pairGameWinHandler);
 pairGame.init(document);
