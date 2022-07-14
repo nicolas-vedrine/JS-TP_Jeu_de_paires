@@ -48,11 +48,12 @@ class PairGame extends AbstractGame {
     }
 
     cardClickHandler(card) {
-        card.activate(true);
-
+        
         if (this.locked) {
             return;
         }
+        
+        card.activate(true);
 
         if (!this.flippedCard) {
             this.flippedCard = true;
@@ -89,15 +90,18 @@ class PairGame extends AbstractGame {
             } else {
                 this.dispatchEvent(new PairGameEvent(PairGameEventNames.WRONG));
                 setTimeout(() => {
-                    this.dispatchEvent(new PairGameEvent(PairGameEventNames.FLIP));
+                    
                     this.firstCard.activate(false);
                     this.secondCard.activate(false);
                     this.firstCard.disable(false);
                     this.secondCard.disable(false);
-
+                    
                     this.firstCard = null;
                     this.secondCard = null;
                     this.locked = false;
+
+                    this.dispatchEvent(new PairGameEvent(PairGameEventNames.FLIP));
+                    
                 }, Delays.FLIP);
             }
         }
