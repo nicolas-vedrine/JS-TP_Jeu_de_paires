@@ -134,6 +134,7 @@ class PairGame extends AbstractGame {
                     this.allCouples.splice(this.allCouples.indexOf(couple), 1);
                     if (this.allCouples.length == 0) {
                         console.log("Partie terminée !");
+                        this.increasePoints();
                         this.dispatchEvent(new PairGameEvent(AbstractGameEventNames.WIN));
                     }
                     break;
@@ -227,6 +228,7 @@ function pairGameInitHandler(evt) {
     const infosDiv = document.querySelector("#infos");
     infosDiv.parentNode.appendChild(infosDiv);
     refreshRemainingCouples();
+    refreshNbPoints();
 }
 
 function pairGameGoodWrongHandler(evt) {
@@ -246,7 +248,13 @@ function pairGameFlipHandler(evt) {
 
 function pairGameWinHandler(evt) {
     console.log("pairGameWinHandler", evt.type);
+    refreshNbPoints();
     pairGame.init(document);
+}
+
+function refreshNbPoints(){
+    const nbPointsDiv = document.querySelector("#nbPoints");
+    nbPointsDiv.textContent = "Nombre de points : " + pairGame.points;
 }
 
 function refreshRemainingCouples() {

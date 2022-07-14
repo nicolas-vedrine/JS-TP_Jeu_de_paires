@@ -52,12 +52,18 @@ class AbstractGame extends EventTarget {
         super();
         console.log("Instanciation du jeu.");
         this.dataSource;
+        this.points = 0;
     }
 
     init(dataSource) {
         this.dataSource = dataSource;
         this.dispatchEvent(new AbstractGameEvent(AbstractGameEventNames.INIT));
         console.log("Game init avec la source : " + dataSource);
+    }
+
+    increasePoints(){
+        this.points += 100;
+        console.log("increasePoints", this.points);
     }
 };
 
