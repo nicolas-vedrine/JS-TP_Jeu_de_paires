@@ -1,3 +1,5 @@
+// https://fr.acervolima.com/differences-entre-la-programmation-procedurale-et-orientee-objet/#:~:text=La%20programmation%20proc%C3%A9durale%20peut%20%C3%AAtre,%C3%A9tapes%20de%20calcul%20%C3%A0%20effectuer.
+
 const EventNames = {
     MOUSE_DOWN: "mousedown",
     MOUSE_UP: "mouseup",
