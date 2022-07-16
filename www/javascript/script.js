@@ -111,7 +111,7 @@ class PairGame extends AbstractGame {
 
     /**
      * @description Handler when a card is clicked.
-     * @param {Card} card 
+     * @param {Card} The clicked card.
      */
     cardClickHandler(card) {
         if (this.locked) {
