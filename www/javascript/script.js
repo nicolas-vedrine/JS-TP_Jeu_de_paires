@@ -9,12 +9,6 @@ const Delays = {
     FLIP: 1500
 }
 
-class Line {
-    constructor(dataSource) {
-        this.dataSource = dataSource;
-    }
-}
-
 const PairGameEventNames = {
     GOOD: "good",
     WRONG: "wrong",
@@ -39,6 +33,9 @@ class PairGame extends AbstractGame {
         this.locked = false;
     }
 
+    /**
+     * @description Return the remaining card couples.
+     */
     get remainingCouples() {
         return this.allCouples.length;
     }
@@ -55,7 +52,7 @@ class PairGame extends AbstractGame {
                     if (isDebug) {
                         card.buttonDiv.style.border = "solid";
                     }
-                    console.log(card);
+                    // console.log(card);
                     card.rotate();
                     couples.push(card);
                 }
@@ -75,6 +72,10 @@ class PairGame extends AbstractGame {
         super.init(dataSource);
     }
 
+    /**
+     * @description Init the pair game lines.
+     * @param {*} dataSource 
+     */
     initLines(dataSource) {
         this.lines.splice(0);
         for (const lineDiv of dataSource.querySelectorAll(".ligne")) {
@@ -87,6 +88,10 @@ class PairGame extends AbstractGame {
         }
     }
 
+    /**
+     * Init the pair game cards.
+     * @param {*} dataSource 
+     */
     initCards(dataSource) {
         this.cards.splice(0);
         const cardsClass = dataSource.querySelectorAll(".carte");
@@ -96,7 +101,7 @@ class PairGame extends AbstractGame {
                 this.cardClickHandler(card);
             }.bind(this));
 
-            card.face.textContent = card.letter;
+            card.letter = card.letter;
             if (debug) {
                 card.back.textContent = card.letter;
             }
@@ -104,6 +109,10 @@ class PairGame extends AbstractGame {
         }
     }
 
+    /**
+     * @description Handler when a card is clicked.
+     * @param {Card} card 
+     */
     cardClickHandler(card) {
         if (this.locked) {
             return;
@@ -123,6 +132,9 @@ class PairGame extends AbstractGame {
         }
     }
 
+    /**
+     * @description Check the cards when 2 cards are clicked.
+     */
     checkCouple() {
         this.locked = true;
         console.log("isCardsMatch", this.isCardsMatch());
@@ -161,6 +173,9 @@ class PairGame extends AbstractGame {
         }
     }
 
+    /**
+     * @description Flip all the cards.
+     */
     flipCards() {
         for (const card of this.cards) {
             card.activate(true);
@@ -171,10 +186,19 @@ class PairGame extends AbstractGame {
         }
     }
 
+    /**
+     * @description Check if the 2 clicked cards match.
+     */
     isCardsMatch() {
         return this.firstCard.letter == this.secondCard.letter;
     }
 
+}
+
+class Line {
+    constructor(dataSource) {
+        this.dataSource = dataSource;
+    }
 }
 
 const CardEventsName = {
@@ -192,14 +216,30 @@ class Card extends AbstractButton {
         super(buttonDiv);
     }
 
+    /**
+     * return the letter's card.
+     */
     get letter() {
         return this.buttonDiv.getAttribute("data-attr");
     }
 
+    /**
+     * set the letter's card.
+     */
+    set letter(value) {
+        this.face.textContent = value;
+    }
+
+    /**
+     * return the face's div card.
+     */
     get face() {
         return this.buttonDiv.querySelector(".face");
     }
 
+    /**
+     * return the back's div card.
+     */
     get back() {
         return this.buttonDiv.querySelector(".arriere");
     }
@@ -210,6 +250,10 @@ class Card extends AbstractButton {
         this.dispatchEvent(new CardEvent(CardEventsName.CLICK));
     }
 
+    /**
+     * @description Activate of not the card with the flip.
+     * @param {Boolean} flag 
+     */
     activate(flag) {
         if (flag) {
             this.buttonDiv.childNodes[1].classList.toggle("active");
@@ -218,6 +262,9 @@ class Card extends AbstractButton {
         }
     }
 
+    /**
+     * @description Rotate the card.
+     */
     rotate() {
         this.face.style.transform = "rotateY(180deg)";
     }
@@ -268,4 +315,7 @@ pairGame.addEventListener(PairGameEventNames.GOOD, pairGameGoodWrongHandler);
 pairGame.addEventListener(PairGameEventNames.WRONG, pairGameGoodWrongHandler);
 pairGame.addEventListener(PairGameEventNames.FLIP, pairGameFlipHandler);
 pairGame.addEventListener(AbstractGameEventNames.WIN, pairGameWinHandler);
-pairGame.init(document);
+// pairGame.init(document);
+
+const card = document.querySelectorAll(".carte")[2];
+card.childNodes[1].classList.toggle("active");

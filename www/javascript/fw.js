@@ -19,6 +19,10 @@ class AbstractButton extends EventTarget{
         console.log("buttonDiv", this.buttonDiv);
     }
 
+    /**
+     * @description Disable or not the button.
+     * @param {Boolean} bool 
+     */
     disable(bool = true) {
         this.isDisable = bool;
         this.buttonDiv.style.cursor = bool ? "auto" : "pointer";
@@ -55,12 +59,21 @@ class AbstractGame extends EventTarget {
         this.points = 0;
     }
 
+    /**
+     * @description Initialize the game with its dataSource.
+     * @param {*} dataSource 
+     */
     init(dataSource) {
         this.dataSource = dataSource;
         this.dispatchEvent(new AbstractGameEvent(AbstractGameEventNames.INIT));
         console.log("Game init avec la source : " + dataSource);
     }
 
+    /**
+     * 
+     * @description Inscrease the number of points.
+     * 
+     */
     increasePoints(){
         this.points += 100;
         console.log("increasePoints", this.points);
